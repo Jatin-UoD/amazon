@@ -1,9 +1,6 @@
 @import "tailwindcss";
 
 :root {
-  --stage: #050b14;
-  --stage-fg: #e8f0fa;
-  --stage-muted: #93a7c3;
   --bg: #071422;
   --surface: #0c1c31;
   --surface-2: #122844;
@@ -12,115 +9,64 @@
   --muted: #8ea6c3;
   --faint: #65809f;
   --primary: #2f9bff;
-  --primary-ink: #f5f9ff;
   --accent: #3ee0b0;
   --warn: #f0b429;
   --danger: #ff5d73;
-  --knob: #f7fbff;
-  --photo-fg: #f7fbff;
 }
 
-.hp {
-  color-scheme: dark;
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body, #root {
+  height: 100%;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
-.hp.light {
-  color-scheme: light;
-  --bg: #e7eef6;
-  --surface: #ffffff;
-  --surface-2: #f5f8fc;
-  --line: #d3e0ee;
-  --fg: #102033;
-  --muted: #526781;
-  --faint: #7b90a8;
-  --primary: #1277db;
-  --primary-ink: #f7fbff;
-  --accent: #0c8f6c;
-  --warn: #a16207;
-  --danger: #d13852;
-  --knob: #ffffff;
+.phone-shell {
+  max-width: 390px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  background: var(--bg);
+  position: relative;
+  overflow-x: hidden;
 }
-
-@theme inline {
-  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
-  --color-stage: var(--stage);
-  --color-stage-fg: var(--stage-fg);
-  --color-stage-muted: var(--stage-muted);
-  --color-bg: var(--bg);
-  --color-surface: var(--surface);
-  --color-surface-2: var(--surface-2);
-  --color-line: var(--line);
-  --color-fg: var(--fg);
-  --color-muted: var(--muted);
-  --color-faint: var(--faint);
-  --color-primary: var(--primary);
-  --color-primary-ink: var(--primary-ink);
-  --color-accent: var(--accent);
-  --color-warn: var(--warn);
-  --color-danger: var(--danger);
-  --color-knob: var(--knob);
-  --color-photo-fg: var(--photo-fg);
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
 }
-
-@layer base {
-  html {
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-  }
-  body {
-    margin: 0;
-    background: var(--stage);
-    color: var(--stage-fg);
-    font-family: var(--font-sans);
-  }
-  button:not(:disabled),
-  [role="button"]:not(:disabled) {
-    cursor: pointer;
-  }
-  button:disabled {
-    cursor: not-allowed;
-  }
-  h1,
-  h2,
-  h3 {
-    text-wrap: balance;
-  }
-  p {
-    text-wrap: pretty;
-  }
-  button:focus-visible,
-  a:focus-visible,
-  input:focus-visible,
-  select:focus-visible {
-    outline: 2px solid var(--primary);
-    outline-offset: 2px;
-  }
-  input[type="range"] {
-    accent-color: var(--primary);
-    width: 100%;
-  }
+.btn-primary {
+  background: linear-gradient(135deg, #2f9bff, #1a7ae0);
+  color: white;
+  font-weight: 600;
+  border-radius: 12px;
+  padding: 14px 20px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
 }
-
-@keyframes hp-in {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+.toggle {
+  width: 48px; height: 28px; border-radius: 14px;
+  background: #1d3d5e; position: relative; cursor: pointer; transition: background 0.2s;
 }
-
-.hp-in {
-  animation: hp-in 200ms ease-out;
+.toggle.on { background: #2f9bff; }
+.toggle::after {
+  content: ""; position: absolute; top: 3px; left: 3px;
+  width: 22px; height: 22px; border-radius: 50%; background: white; transition: transform 0.2s;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
+.toggle.on::after { transform: translateX(20px); }
+.tab-bar {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 390px;
+  background: rgba(7,20,34,0.95); backdrop-filter: blur(12px);
+  border-top: 1px solid var(--line);
+  display: flex; justify-content: space-around;
+  padding: 8px 0 calc(8px + env(safe-area-inset-bottom)); z-index: 50;
 }
+.tab-item {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  font-size: 10px; color: var(--faint); background: none; border: none; cursor: pointer; padding: 4px 12px;
+}
+.tab-item.active { color: var(--primary); }
+.scroll-hide::-webkit-scrollbar { display: none; }
+.scroll-hide { -ms-overflow-style: none; scrollbar-width: none; }

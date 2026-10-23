@@ -1,41 +1,16 @@
 export type Role = "owner" | "admin" | "member" | "guest";
-
-export type DeviceKind =
-  | "light"
-  | "fan"
-  | "ac"
-  | "tv"
-  | "plug"
-  | "curtain"
-  | "washer"
-  | "pump"
-  | "geyser"
-  | "sensor";
-
+export type DeviceKind = "light" | "fan" | "ac" | "tv" | "plug" | "curtain" | "washer" | "pump" | "geyser" | "sensor";
 export type AcMode = "Cool" | "Heat" | "Dry" | "Fan" | "Auto";
 export type FanMode = "Auto" | "Low" | "Med" | "High";
 export type WasherState = "idle" | "washing" | "rinse" | "spin" | "done";
 export type Ack = "idle" | "pending" | "confirmed" | "failed" | "offline";
 
-export interface FanSpeedCap {
-  min: number;
-  max: number;
-}
-
-export interface AcCap {
-  min: number;
-  max: number;
-  modes: AcMode[];
-  fanModes: FanMode[];
-}
-
-/** Only declared capabilities render controls. A relay is never a speed controller. */
 export interface Capabilities {
   power: boolean;
   brightness: boolean;
   color: boolean;
-  fanSpeed: FanSpeedCap | null;
-  ac: AcCap | null;
+  fanSpeed: { min: number; max: number } | null;
+  ac: { min: number; max: number; modes: AcMode[]; fanModes: FanMode[] } | null;
   media: boolean;
   curtain: boolean;
   washerStatus: boolean;
@@ -47,7 +22,6 @@ export interface Device {
   name: string;
   roomId: string;
   kind: DeviceKind;
-  /** Every device in this preview speaks the simulator. Real adapters would replace this. */
   integration: "simulated";
   online: boolean;
   favorite: boolean;
@@ -71,10 +45,7 @@ export interface Device {
   note?: string;
 }
 
-export interface Room {
-  id: string;
-  name: string;
-}
+export interface Room { id: string; name: string; }
 
 export type Action =
   | { type: "power"; deviceId: string; on: boolean }
@@ -86,46 +57,6 @@ export type Action =
   | { type: "brightness"; deviceId: string; brightness: number }
   | { type: "curtain"; deviceId: string; position: number }
   | { type: "pump"; on: boolean };
-
-export interface DeviceCommand {
-  id: string;
-  householdId: string;
-  deviceId: string;
-  capability: string;
-  value: number | string | boolean;
-  issuedAt: number;
-}
-
-export interface CommandAck {
-  id: string;
-  status: "confirmed" | "failed" | "offline" | "rejected";
-  detail: string;
-  at: number;
-}
-
-export interface HourBucket {
-  t: number;
-  kwh: number;
-  peakW: number;
-  quality: "simulated";
-}
-
-export interface TracePoint {
-  t: number;
-  powerW: number;
-  voltage: number;
-  current: number;
-}
-
-export interface LiveElectrical {
-  voltage: number;
-  current: number;
-  powerW: number;
-  frequency: number;
-  powerFactor: number;
-  quality: "simulated";
-  updatedAt: number;
-}
 
 export interface Automation {
   id: string;
@@ -157,32 +88,22 @@ export interface Activity {
   read: boolean;
 }
 
-export interface ChatCard {
-  title: string;
-  subtitle: string;
-}
-
 export interface ChatMessage {
   id: string;
   role: "user" | "assistant";
   text: string;
-  cards?: ChatCard[];
+  cards?: { title: string; subtitle: string }[];
   confirm?: { actions: Action[]; saveAs?: string };
 }
 
 export type Intent =
-  | { type: "reply"; text: string; cards?: ChatCard[] }
-  | { type: "act"; text: string; actions: Action[]; cards?: ChatCard[] }
+  | { type: "reply"; text: string; cards?: { title: string; subtitle: string }[] }
+  | { type: "act"; text: string; actions: Action[]; cards?: { title: string; subtitle: string }[] }
   | { type: "confirm"; text: string; actions: Action[]; saveAs?: string }
   | { type: "query-energy" }
   | { type: "query-water" };
 
-export interface Member {
-  id: string;
-  name: string;
-  email: string;
-  role: Role;
-}
+export interface Member { id: string; name: string; email: string; role: Role; }
 
 export interface WaterState {
   levelPct: number;
@@ -206,31 +127,10 @@ export interface RingEvent {
   demo: true;
 }
 
-export interface RingState {
-  events: RingEvent[];
-  seenEventIds: string[];
-}
-
 export type Screen =
-  | "splash"
-  | "signin"
-  | "signup"
-  | "home"
-  | "room"
-  | "device"
-  | "analytics"
-  | "assistant"
-  | "automation"
-  | "ring"
-  | "water"
-  | "notifications"
-  | "settings"
-  | "pairing"
-  | "devices"
-  | "monitor"
-  | "profile"
-  | "members"
-  | "routine";
+  | "splash" | "signin" | "home" | "room" | "device" | "analytics"
+  | "assistant" | "automation" | "ring" | "water" | "notifications"
+  | "settings" | "pairing" | "devices" | "monitor" | "profile" | "members";
 
 export type Tab = "home" | "rooms" | "automation" | "analytics" | "more";
 export type RangeKey = "day" | "week" | "month" | "year";
@@ -240,24 +140,7 @@ export interface Session {
   signedIn: boolean;
   name: string;
   email: string;
-  remember: boolean;
-}
-
-export interface PendingConfirm {
-  title: string;
-  detail: string;
-  actions: Action[];
+  role: Role;
 }
 
 export const HOUSEHOLD_ID = "home-demo";
-
-export const LIGHT_PRESETS = [
-  { id: "warm", label: "Warm", hex: "#ffc98a" },
-  { id: "soft", label: "Soft", hex: "#ffe3b8" },
-  { id: "day", label: "Day", hex: "#f5f8ff" },
-  { id: "cool", label: "Cool", hex: "#c5dcff" },
-] as const;
-
-export function lightHex(id: string): string {
-  return LIGHT_PRESETS.find((p) => p.id === id)?.hex ?? LIGHT_PRESETS[0].hex;
-}

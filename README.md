@@ -1,29 +1,37 @@
 # HomePilot
 
-One Home. One App. Total Control.
+**One Home. One App. Total Control.**
 
-Mobile-first smart home console: lights, fans, AC, TV, plugs, curtains, a washer status feed, water tank and pump, energy analytics, automations, and a Ring **demo** path. Essential controls run with no AI key.
+Mobile-first smart home console for the Amazon Developer Hackathon.
 
-This repository is the working web app (phone layout). A native Expo shell is not what the live preview runs. The device, command, and Ring contracts below are the same shapes a React Native client or an ESP32 firmware module would speak.
+## Features (matching the UI mockup)
 
-## What is real vs simulated
+1. Splash / Onboarding  
+2. Sign In (demo accounts)  
+3. Home Dashboard — rooms, quick actions, power  
+4. Room Control  
+5. Device Detail — fan speed, AC temp, brightness  
+6. Energy Analytics — charts + device-wise usage  
+7. AI Assistant — rule-based local commands  
+8. Automation & Scenes  
+9. Ring Security (demo events)  
+10. Water Tank & Pump (auto start/stop)  
+11. Notifications  
+12. Settings & Members  
+13. Device Pairing  
+14. Device List  
+15. Live Monitoring  
+16. Profile  
 
-| Piece | Status |
-| --- | --- |
-| Device controls, rooms, timers, scenes | Working. State is saved in this browser. |
-| Command ack: pending, confirmed, failed, offline | Working. Offline devices reject commands. |
-| Fan speed | Only if the device declares a regulator. Passage Fan is a relay and refuses speed. |
-| Energy, voltage, current, cost | **Simulated.** Integrated from instantaneous watts. Gaps over 15s are not invented. Tariff is editable. |
-| Water auto start/stop | **Simulated** local logic: low/high marks, runtime limit, sensor-fault lockout. |
-| Assistant | Deterministic rules. No model is called. Ambiguous commands ask; pumps and high loads confirm. |
-| Ring | **Demo events only.** Not a live Ring account. Setup steps for the official API are in the Ring screen. |
-| Google / Apple sign-in | Not configured. Email sign-in is local to this device. Passwords are not stored. |
+## Demo accounts
 
-Demo accounts (any password of 4+ characters):
+| Email | Role |
+|-------|------|
+| jatin@example.com | Owner |
+| anika@example.com | Admin |
+| guest@homepilot.app | Guest (controls locked) |
 
-- `jatin@example.com` — owner
-- `anika@example.com` — admin
-- `guest@homepilot.app` — guest, controls locked
+Any password with 4+ characters works. State is saved in the browser.
 
 ## Run
 
@@ -32,12 +40,18 @@ npm install
 npm run dev
 ```
 
-The app serves on port 8080.
+Open http://localhost:8080
 
-```bash
-npm run typecheck
-npm test
-npm run build
-```
+## Stack
 
-See the rest of the source in the following commits.
+- React 19 + TypeScript + Vite  
+- Tailwind CSS v4  
+- Zustand (persisted state)  
+- Recharts (energy charts)  
+- Lucide icons  
+
+Electricity, water, and Ring events are **simulated**. No external API keys required.
+
+## Deploy (Vercel)
+
+Import this repo on Vercel. Framework: Vite. Build: `npm run build`. Output: `dist`. No environment variables.
