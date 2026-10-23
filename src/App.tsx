@@ -80,10 +80,8 @@ function Splash() {
         <Logo size={48} />
         <h1 className="text-3xl font-extrabold mt-4 text-white">HomePilot</h1>
         <p className="text-[#8ea6c3] mt-1 text-sm">One Home. One App. Total Control.</p>
-        <div className="mt-8 w-full max-w-[280px] rounded-2xl overflow-hidden border border-[#1d3d5e]">
-          <div className="h-40 bg-gradient-to-b from-[#122844] to-[#0c1c31] flex items-center justify-center">
-            <Home size={64} className="text-[#2f9bff] opacity-80" />
-          </div>
+        <div className="mt-6 w-full max-w-[300px] rounded-[28px] overflow-hidden border border-[#1d3d5e] shadow-[0_20px_50px_rgba(0,0,0,0.35)]">
+          <img src="/img/house.jpg" alt="Smart home at night" className="h-52 w-full object-cover" />
         </div>
         <h2 className="mt-6 text-xl font-bold">Smarter Home<br />Brighter Future</h2>
         <p className="text-[#8ea6c3] text-sm mt-2 px-4">Control your devices, monitor energy, keep your home safe — all in one app.</p>
@@ -520,8 +518,8 @@ function RingScreen() {
           </div>
         </div>
         <div className="card overflow-hidden mb-4">
-          <div className="h-44 bg-gradient-to-b from-[#1a3048] to-[#0c1c31] flex items-center justify-center relative">
-            <Home size={48} className="text-[#2f9bff] opacity-50" />
+          <div className="h-48 relative">
+            <img src="/img/porch.jpg" alt="Front door camera" className="h-full w-full object-cover" />
             <span className="absolute top-3 left-3 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded">LIVE</span>
           </div>
           <div className="p-3 flex gap-4 justify-center text-xs">
