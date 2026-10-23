@@ -227,7 +227,7 @@ function HomeDashboard() {
 }
 
 function RoomControl() {
-  const { devices, rooms, selectedRoomId, setScreen, selectDevice, toggleDevice } = useStore();
+  const { devices, rooms, selectedRoomId, setScreen, selectDevice, toggleDevice, setBrightness, setSpeed } = useStore();
   const room = rooms.find((r) => r.id === selectedRoomId);
   const list = devices.filter((d) => d.roomId === selectedRoomId);
   const active = list.filter((d) => d.power).length;
@@ -249,23 +249,37 @@ function RoomControl() {
         </div>
         <div className="space-y-3">
           {list.map((d) => (
-            <div key={d.id} className="card p-4 flex items-center gap-3" onClick={() => selectDevice(d.id)}>
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${d.power ? "bg-[#2f9bff]/20 text-[#2f9bff]" : "bg-[#122844] text-[#8ea6c3]"}`}>
-                {kindIcon(d.kind)}
+            <div key={d.id} className="card p-4" onClick={() => selectDevice(d.id)}>
+              <div className="flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${d.power ? "bg-[#2f9bff]/20 text-[#2f9bff]" : "bg-[#122844] text-[#8ea6c3]"}`}>
+                  {kindIcon(d.kind)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-sm truncate">{d.name}</p>
+                  <p className="text-xs text-[#8ea6c3]">
+                    {d.kind === "fan" && d.power ? `On · Speed ${d.speed}` :
+                     d.kind === "ac" && d.power ? `${d.temperature}° · ${d.acMode}` :
+                     d.kind === "light" && d.power ? `On · ${d.brightness}%` :
+                     d.power ? "On" : "Off"}
+                    {!d.online && " · Offline"}
+                  </p>
+                </div>
+                <div onClick={(e) => { e.stopPropagation(); toggleDevice(d.id); }}>
+                  <Toggle on={d.power} onClick={() => {}} />
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-medium text-sm truncate">{d.name}</p>
-                <p className="text-xs text-[#8ea6c3]">
-                  {d.kind === "fan" && d.power ? `On · Speed ${d.speed}` :
-                   d.kind === "ac" && d.power ? `${d.temperature}° · ${d.acMode}` :
-                   d.kind === "light" && d.power ? `On · ${d.brightness}%` :
-                   d.power ? "On" : "Off"}
-                  {!d.online && " · Offline"}
-                </p>
-              </div>
-              <div onClick={(e) => { e.stopPropagation(); toggleDevice(d.id); }}>
-                <Toggle on={d.power} onClick={() => {}} />
-              </div>
+              {d.power && d.capabilities.brightness && (
+                <input type="range" min={0} max={100} value={d.brightness}
+                  onClick={(e) => e.stopPropagation()}
+                  onChange={(e) => setBrightness(d.id, Number(e.target.value))}
+                  className="w-full mt-3 accent-[#2f9bff]" />
+              )}
+              {d.power && d.capabilities.fanSpeed && (
+                <input type="range" min={1} max={5} value={d.speed}
+                  onClick={(e) => e.stopPropagation()}
+                  onChange={(e) => setSpeed(d.id, Number(e.target.value))}
+                  className="w-full mt-3 accent-[#2f9bff]" />
+              )}
             </div>
           ))}
         </div>
@@ -289,14 +303,11 @@ function DeviceDetail() {
             <p className="text-xs text-[#8ea6c3] capitalize">{d.roomId.replace("-", " ")}</p>
           </div>
         </div>
-        <div className="flex flex-col items-center py-8">
-          <div className={`w-28 h-28 rounded-full flex items-center justify-center border-2 ${d.power ? "border-[#2f9bff] bg-[#2f9bff]/10 text-[#2f9bff]" : "border-[#1d3d5e] text-[#65809f]"}`}>
-            {kindIcon(d.kind, 40)}
+        <div className="flex flex-col items-center py-6">
+          <div className={`w-44 h-44 rounded-full flex items-center justify-center border-[10px] ${d.power ? "border-[#163a66] bg-[#0b2340] text-[#7ec4ff]" : "border-[#1d3d5e] text-[#65809f]"}`}>
+            <div className={d.power && d.kind === "fan" ? "fan-on" : ""}>{kindIcon(d.kind, 64)}</div>
           </div>
           <p className={`mt-4 font-semibold ${d.power ? "text-[#3ee0b0]" : "text-[#8ea6c3]"}`}>{d.power ? "On" : "Off"}</p>
-          <button className="mt-4 card px-6 py-2 text-sm" onClick={() => toggleDevice(d.id)}>
-            <Power size={16} className="inline mr-2" />Toggle Power
-          </button>
         </div>
         {d.capabilities.fanSpeed && (
           <div className="card p-4 mb-4">
